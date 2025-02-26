@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.form-input {
+  @apply w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500;
+}
+
+.btn {
+  @apply px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-red-500;
+}
+
+.btn-danger {
+  @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
+}
+
+.chapter-item {
+  @apply mb-4 rounded-lg overflow-hidden border border-gray-200;
+}
+
+.chapter-header {
+  @apply bg-gray-100 py-3 px-4 flex justify-between items-center cursor-pointer;
+}
+
+.chapter-header.active {
+  @apply bg-red-50 border-red-500;
+}
+
+.table-header {
+  @apply bg-gray-50 py-2 px-4;
+}
+
+.table-row {
+  @apply border-t border-gray-200 hover:bg-gray-50;
+}
+
+.table-cell {
+  @apply py-3 px-4;
+}
+
+.control-section {
+  @apply bg-gray-50 mb-4 rounded-lg overflow-hidden border border-gray-200;
+}
+
+.control-header {
+  @apply bg-gray-100 py-3 px-4;
+}
+
+.tab {
+  @apply px-6 py-3 text-center;
+}
+
+.tab.active {
+  @apply bg-red-500 text-white font-semibold;
+}
