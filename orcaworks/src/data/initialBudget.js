@@ -1,7 +1,7 @@
 const initialBudget = {
     project: {
       id: "PROJ-001",
-      name: "Moradia S. Pedro Estoril",
+      name: "Projeto",
       client: "Cliente Exemplo",
       date_created: "2025-02-25",
       last_modified: "2025-02-25",

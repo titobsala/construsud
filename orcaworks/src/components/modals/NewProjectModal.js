@@ -21,10 +21,10 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
     }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    await onSave(formData);
+    // onClose will be called by the parent component after the project is successfully created
   };
   
   const nextStep = () => {
