@@ -16,7 +16,7 @@ const AuthForm = () => {
     
     try {
       if (isLogin) {
-        const { data, error } = await signIn({ email, password });
+        const { error } = await signIn({ email, password });
         
         if (error) {
           setMessage({ type: 'error', text: error.message });
@@ -31,7 +31,7 @@ const AuthForm = () => {
           return;
         }
         
-        const { data, error } = await signUp({ email, password, fullName });
+        const { error } = await signUp({ email, password, fullName });
         
         if (error) {
           setMessage({ type: 'error', text: error.message });

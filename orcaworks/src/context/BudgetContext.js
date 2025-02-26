@@ -300,7 +300,7 @@ export const BudgetProvider = ({ children }) => {
         }
         
         // Add item to database
-        const { data, error } = await budgetService.createItem(chapters.id, newItem);
+        const { error } = await budgetService.createItem(chapters.id, newItem);
         
         if (error) {
           console.error('Error adding item to database:', error);
