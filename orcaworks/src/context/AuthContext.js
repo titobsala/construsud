@@ -43,28 +43,36 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Sign up with email and password
-  const signUp = async ({ email, password, fullName }) => {
+  const signUp = async ({ email, password, fullName, companyName, vatNumber }) => {
     setLoading(true);
     setAuthError(null);
     
-    const { data, error } = await supabase.auth.signUp({
+    // First, create the organization
+    const { data: orgData, error: orgError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
+          company_name: companyName,
+          vat_number: vatNumber,
         },
       },
     });
 
-    if (error) {
-      setAuthError(error.message);
+    if (orgError) {
+      setAuthError(orgError.message);
       setLoading(false);
-      return { error };
+      return { error: orgError };
     }
+    
+    // Once registered, the trigger in the database will create a profile
+    // and handle_new_user() will set up the basic profile.
+    // The organization creation will be handled after email confirmation
+    // when the user first signs in.
 
     setLoading(false);
-    return { data };
+    return { data: orgData };
   };
 
   // Sign in with email and password

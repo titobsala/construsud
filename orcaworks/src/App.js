@@ -7,6 +7,7 @@ import InternalControl from './components/budget/InternalControl';
 import EditItemModal from './components/modals/EditItemModal';
 import NewChapterModal from './components/modals/NewChapterModal';
 import NewProjectModal from './components/modals/NewProjectModal';
+import ProfileModal from './components/modals/ProfileModal';
 import AuthForm from './components/auth/AuthForm';
 import { useBudget } from './context/BudgetContext';
 import { useAuth } from './context/AuthContext';
@@ -24,6 +25,7 @@ function App() {
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   
   const handleNewProject = async (projectData) => {
     console.log('New project data:', projectData);
@@ -40,6 +42,10 @@ function App() {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+  
+  const handleProfileClick = () => {
+    setShowProfileModal(true);
   };
   
   // Show loading indicator while authentication state is being determined
@@ -68,6 +74,7 @@ function App() {
       <Header 
         toggleSidebar={() => setSidebarOpen(!sidebarOpen)} 
         onSignOut={handleSignOut}
+        onProfileClick={handleProfileClick}
         userEmail={user.email}
       />
       
@@ -107,6 +114,10 @@ function App() {
         isOpen={showNewProjectModal} 
         onClose={() => setShowNewProjectModal(false)}
         onSave={handleNewProject}
+      />
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
       />
     </div>
   );
