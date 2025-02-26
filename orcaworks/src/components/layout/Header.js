@@ -12,14 +12,14 @@ const Header = ({ toggleSidebar, onSignOut, userEmail }) => {
       <div className="flex items-center space-x-4">
         <button 
           onClick={toggleSidebar}
-          className="text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 focus:outline-none"
+          className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 focus:outline-none"
           aria-label="Toggle sidebar"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-indigo-600 dark:text-indigo-400">Cosntrusud</h1>
+        <h1 className="text-xl font-bold text-red-600 dark:text-red-400">Construsud</h1>
       </div>
       
       <div className="text-center flex-1">
@@ -33,7 +33,7 @@ const Header = ({ toggleSidebar, onSignOut, userEmail }) => {
           <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">Valor:</span>
           <span className="font-medium text-gray-800 dark:text-gray-200">{formatCurrency(sellValue)}</span>
         </div>
-        <button className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm">
+        <button className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm">
           Salvar
         </button>
         <button className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm">
@@ -44,7 +44,7 @@ const Header = ({ toggleSidebar, onSignOut, userEmail }) => {
         <div className="relative">
           <button 
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 focus:outline-none"
+            className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 focus:outline-none"
           >
             <span className="mr-2">{userEmail}</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

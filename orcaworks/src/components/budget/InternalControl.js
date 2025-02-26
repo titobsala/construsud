@@ -32,7 +32,7 @@ const InternalControl = () => {
     <div className="h-full flex flex-col">
       <div className="bg-white dark:bg-gray-800 px-5 py-4 rounded-xl mb-6 shadow-sm border border-gray-100 dark:border-gray-700">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500 dark:text-red-400" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
           </svg>
           Controle Interno (Uso Exclusivo)
@@ -42,7 +42,7 @@ const InternalControl = () => {
       <div className="space-y-6 flex-grow overflow-auto">
         {/* VENDA Section */}
         <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800">
-          <div className="bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 dark:border-indigo-400 py-3 px-5">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 py-3 px-5">
             <h3 className="font-semibold text-gray-800 dark:text-gray-200">VENDA</h3>
           </div>
           <div className="p-5 space-y-5">
@@ -70,7 +70,7 @@ const InternalControl = () => {
                       type="number" 
                       value={CONTROLE_INTERNO.VENDA.items[0].Margem_Percentual} 
                       onChange={handleMarginChange}
-                      className="w-24 px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                      className="w-24 px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                       min="0"
                       max="100"
                       step="0.01"
@@ -111,7 +111,7 @@ const InternalControl = () => {
                   type="number" 
                   value={CONTROLE_INTERNO.DIVERSOS.items[0].Alimentacao_Euro} 
                   onChange={(e) => handleDiverseCostChange('Alimentacao_Euro', e)}
-                  className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                  className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                   min="0"
                   step="0.01"
                 />
@@ -122,7 +122,7 @@ const InternalControl = () => {
                   type="number" 
                   value={CONTROLE_INTERNO.DIVERSOS.items[0].Passagens_Euro} 
                   onChange={(e) => handleDiverseCostChange('Passagens_Euro', e)}
-                  className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                  className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                   min="0"
                   step="0.01"
                 />
@@ -135,7 +135,7 @@ const InternalControl = () => {
                 type="number" 
                 value={CONTROLE_INTERNO.DIVERSOS.items[0].Outros_Euro} 
                 onChange={(e) => handleDiverseCostChange('Outros_Euro', e)}
-                className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                 min="0"
                 step="0.01"
               />
@@ -173,7 +173,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="0.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.01"
                         readOnly
@@ -183,7 +183,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="0.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.01"
                         readOnly
@@ -193,7 +193,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="0.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.01"
                         readOnly
@@ -240,7 +240,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="0.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.01"
                         readOnly
@@ -250,7 +250,7 @@ const InternalControl = () => {
                   <tr>
                     <td className="px-4 py-3 text-gray-700 dark:text-gray-300">Mão de Obra</td>
                     <td className="px-4 py-3">
-                      <select className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200">
+                      <select className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200">
                         <option value="E">E</option>
                         <option value="O">O</option>
                         <option value="A">A</option>
@@ -260,7 +260,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="24.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.5"
                         readOnly
@@ -270,7 +270,7 @@ const InternalControl = () => {
                       <input 
                         type="number" 
                         defaultValue="0.00" 
-                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                         min="0"
                         step="0.01"
                         readOnly

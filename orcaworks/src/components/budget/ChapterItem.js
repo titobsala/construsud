@@ -35,19 +35,19 @@ const ChapterItem = ({ chapterKey, chapter }) => {
       <div 
         className={`flex justify-between items-center py-4 px-5 cursor-pointer ${
           isActive 
-            ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 dark:border-indigo-400' 
+            ? 'bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400' 
             : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border-l-4 border-transparent'
         }`}
         onClick={() => setActiveChapter(chapterKey)}
       >
         <div className="flex items-center space-x-3">
-          <div className={`p-2 rounded-lg ${isActive ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
+          <div className={`p-2 rounded-lg ${isActive ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
             {chapterKey}
           </div>
           <h3 className="font-medium text-gray-800 dark:text-gray-200">{chapter.header}</h3>
         </div>
         <div className="flex items-center space-x-4">
-          <span className={`font-medium ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'}`}>
+          <span className={`font-medium ${isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}>
             {formatCurrency(total)}
           </span>
           <svg 
@@ -70,7 +70,7 @@ const ChapterItem = ({ chapterKey, chapter }) => {
           />
           
           <button
-            className="mt-4 w-full py-3 px-4 border border-dashed border-indigo-300 dark:border-indigo-600 rounded-lg text-center text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors cursor-pointer flex items-center justify-center space-x-1"
+            className="mt-4 w-full py-3 px-4 border border-dashed border-red-300 dark:border-red-600 rounded-lg text-center text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer flex items-center justify-center space-x-1"
             onClick={handleAddItem}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

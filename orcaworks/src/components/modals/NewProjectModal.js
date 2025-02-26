@@ -6,7 +6,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
     client: '',
     description: '',
     type: 'residential',
-    startDate: '',
+    start_date: '', // Corrigido: usando snake_case para campos que vão para o banco
     currency: 'EUR'
   });
   
@@ -40,7 +40,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+        <div className="bg-red-50 dark:bg-red-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
               Novo Projeto
@@ -61,15 +61,15 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
           <div className="mb-6">
             <div className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep >= 1 ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                currentStep >= 1 ? 'bg-red-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
               }`}>
                 1
               </div>
               <div className={`flex-1 h-1 mx-2 ${
-                currentStep >= 2 ? 'bg-indigo-500' : 'bg-gray-200 dark:bg-gray-700'
+                currentStep >= 2 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
               }`}></div>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep >= 2 ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                currentStep >= 2 ? 'bg-red-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
               }`}>
                 2
               </div>
@@ -92,7 +92,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                     placeholder="Ex: Moradia S. Pedro Estoril"
                     required
                   />
@@ -107,7 +107,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                     name="client"
                     value={formData.client}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                     placeholder="Ex: José Silva"
                     required
                   />
@@ -122,7 +122,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                     value={formData.description}
                     onChange={handleChange}
                     rows="3"
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                     placeholder="Breve descrição do projeto..."
                   />
                 </div>
@@ -135,7 +135,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                   >
                     <option value="residential">Residencial</option>
                     <option value="commercial">Comercial</option>
@@ -155,10 +155,10 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                   </label>
                   <input
                     type="date"
-                    name="startDate"
-                    value={formData.startDate}
+                    name="start_date"  /* Corrigido: usando snake_case para corresponder ao banco de dados */
+                    value={formData.start_date}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                   />
                 </div>
                 
@@ -170,7 +170,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                     name="currency"
                     value={formData.currency}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                   >
                     <option value="EUR">Euro (€)</option>
                     <option value="USD">Dólar Americano ($)</option>
@@ -183,7 +183,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                   <input
                     type="checkbox"
                     id="useTemplate"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
                   <label htmlFor="useTemplate" className="text-sm text-gray-700 dark:text-gray-300">
                     Usar modelo padrão de capítulos
@@ -194,7 +194,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                   <input
                     type="checkbox"
                     id="addUsers"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
                   <label htmlFor="addUsers" className="text-sm text-gray-700 dark:text-gray-300">
                     Adicionar usuários à equipe do projeto
@@ -208,7 +208,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-indigo-500 transition-colors"
+                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-red-500 transition-colors"
                 >
                   Voltar
                 </button>
@@ -216,7 +216,7 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-indigo-500 transition-colors"
+                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-red-500 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -226,14 +226,14 @@ const NewProjectModal = ({ isOpen, onClose, onSave }) => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 dark:bg-indigo-600 text-white hover:bg-indigo-600 dark:hover:bg-indigo-700 focus:ring-indigo-500 transition-colors"
+                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 focus:ring-red-500 transition-colors"
                 >
                   Próximo
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 dark:bg-indigo-600 text-white hover:bg-indigo-600 dark:hover:bg-indigo-700 focus:ring-indigo-500 transition-colors"
+                  className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 focus:ring-red-500 transition-colors"
                 >
                   Criar Projeto
                 </button>

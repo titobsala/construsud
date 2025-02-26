@@ -4,7 +4,7 @@ const Sidebar = () => {
   return (
     <aside className="w-52 bg-gray-50 border-r border-gray-200">
       <nav className="p-4 space-y-2">
-        <div className="bg-indigo-500 text-white px-4 py-3 rounded-md">
+        <div className="bg-red-500 text-white px-4 py-3 rounded-md">
           <span className="font-medium">Orçamentação</span>
         </div>
         

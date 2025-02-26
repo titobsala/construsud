@@ -13,7 +13,7 @@ const ChapterList = () => {
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 px-5 py-4 rounded-xl mb-6 shadow-sm border border-gray-100 dark:border-gray-700">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Capítulos do Orçamento</h2>
         <button 
-          className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm flex items-center space-x-1"
+          className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm flex items-center space-x-1"
           onClick={() => setShowNewChapterModal(true)}
           disabled={!activeProject}
         >
@@ -40,7 +40,7 @@ const ChapterList = () => {
                   Comece adicionando um novo capítulo ao seu orçamento.
                 </p>
                 <button 
-                  className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm inline-flex items-center space-x-1"
+                  className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out shadow-sm inline-flex items-center space-x-1"
                   onClick={() => setShowNewChapterModal(true)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

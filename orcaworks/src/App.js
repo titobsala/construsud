@@ -47,7 +47,7 @@ function App() {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
           <p className="mt-4 text-gray-700 dark:text-gray-300">Loading...</p>
         </div>
       </div>
@@ -83,7 +83,7 @@ function App() {
           {budgetLoading ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
                 <p className="mt-4 text-gray-700 dark:text-gray-300">Loading project data...</p>
               </div>
             </div>

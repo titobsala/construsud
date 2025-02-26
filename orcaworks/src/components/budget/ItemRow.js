@@ -34,7 +34,7 @@ const ItemRow = ({ chapterKey, item }) => {
       </td>
       <td className="px-4 py-3 text-right">
         <button 
-          className="p-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+          className="p-1 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           onClick={handleEdit}
           aria-label="Editar item"
         >

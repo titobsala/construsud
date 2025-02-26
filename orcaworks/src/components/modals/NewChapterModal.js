@@ -72,7 +72,7 @@ const NewChapterModal = () => {
   return (
     <div className="modal-overlay">
       <div className="modal-content max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl">
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+        <div className="bg-red-50 dark:bg-red-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
               Adicionar Novo Capítulo
@@ -98,7 +98,7 @@ const NewChapterModal = () => {
               name="chapterNumber"
               value={formData.chapterNumber}
               onChange={handleChange}
-              className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+              className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
               placeholder="Ex: 10"
               required
             />
@@ -115,7 +115,7 @@ const NewChapterModal = () => {
                 value={formData.header}
                 onChange={handleChange}
                 onClick={() => setIsDropdownOpen(true)}
-                className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="Selecione ou digite o título"
                 required
               />
@@ -135,7 +135,7 @@ const NewChapterModal = () => {
                 <div className="sticky top-0 bg-white dark:bg-gray-800 p-2 border-b border-gray-200 dark:border-gray-700">
                   <input
                     type="text"
-                    className="w-full px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 focus:border-red-500 dark:focus:border-red-400 dark:bg-gray-700 dark:text-gray-200"
                     placeholder="Pesquisar..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -168,7 +168,7 @@ const NewChapterModal = () => {
           <div className="flex justify-between">
             <button
               type="button"
-              className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-indigo-500 transition-colors"
+              className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white text-gray-700 dark:text-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-red-500 transition-colors"
               onClick={() => setShowNewChapterModal(false)}
             >
               Cancelar
@@ -176,7 +176,7 @@ const NewChapterModal = () => {
             
             <button
               type="submit"
-              className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 dark:bg-indigo-600 text-white hover:bg-indigo-600 dark:hover:bg-indigo-700 focus:ring-indigo-500 transition-colors"
+              className="px-4 py-2 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 focus:ring-red-500 transition-colors"
             >
               Criar Capítulo
             </button>

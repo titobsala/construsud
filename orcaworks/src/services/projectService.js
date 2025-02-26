@@ -54,7 +54,7 @@ export const projectService = {
         number_format: 'PT-PT',
         decimal_places: 2,
         show_all_chapters: true,
-        default_margin: 30.00
+        default_margin: 30.00,
       }]);
     
     if (settingsError) {
