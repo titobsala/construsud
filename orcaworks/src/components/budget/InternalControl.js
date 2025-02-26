@@ -1,6 +1,5 @@
 import React from 'react';
 import { useBudget } from '../../context/BudgetContext';
-import ControlSection from './ControlSection';
 
 const InternalControl = () => {
   const { 

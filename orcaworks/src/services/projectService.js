@@ -63,7 +63,6 @@ export const projectService = {
     }
     
     // Initialize internal control sections
-    const internalControlTypes = ['VENDA', 'DIVERSOS', 'SUB_EMPREITEIROS', 'AMORTIZACOES'];
     const internalControlData = [
       {
         project_id: data.id,

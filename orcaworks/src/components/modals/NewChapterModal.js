@@ -10,7 +10,7 @@ const NewChapterModal = () => {
     template: ''
   });
   
-  const [chapterTemplates, setChapterTemplates] = useState([
+  const [chapterTemplates] = useState([
     { id: 'FUNDACAO', name: 'FUNDAÇÃO SUPERFICIAL - B. S.C/VIGA' },
     { id: 'MOVIMENTO', name: 'MOVIMENTO DE TERRA, REATERRO, COMPACTACAO E NIVELAMENTO' },
     { id: 'PAREDES', name: 'PAREDES' },

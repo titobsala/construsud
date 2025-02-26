@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useBudget } from '../../context/BudgetContext';
 
 const ProjectSidebar = ({ isOpen, onNewProject }) => {
-  const { budget, setActiveChapter, projects, setActiveProjectById } = useBudget();
+  const { projects, setActiveProjectById } = useBudget();
   
   const [activeSection, setActiveSection] = useState('projects');
   const [activeView, setActiveView] = useState('project');
