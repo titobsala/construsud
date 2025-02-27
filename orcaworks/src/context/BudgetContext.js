@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import initialBudget from '../data/initialBudget';
-import { projectService } from '../services/projectService';
+import { getProjects, getProject } from '../services/projects/getProjects';
+import { createProject } from '../services/projects/createProject';
+import { getCompleteProject } from '../services/projects/getCompleteProject';
 import { budgetService } from '../services/budgetService';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabase';
@@ -75,7 +77,7 @@ export const BudgetProvider = ({ children }) => {
       
       setLoading(true);
       try {
-        const { data, error } = await projectService.getProjects();
+        const { data, error } = await getProjects();
         
         if (error) {
           console.error('Error loading projects:', error);
@@ -115,39 +117,59 @@ export const BudgetProvider = ({ children }) => {
   useEffect(() => {
     if (!user) return;
     
-    // Subscribe to projects table changes for the current user
-    const subscription = supabase
-      .channel('public:projects')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'projects',
-        filter: `user_id=eq.${user.id}`
-      }, async (payload) => {
-        console.log('Projects change received!', payload);
+    const setupSubscription = async () => {
+      try {
+        // First get the user's organization ID
+        const { data: userProfile, error: profileError } = await supabase
+          .from('profiles')
+          .select('organization_id')
+          .eq('id', user.id)
+          .single();
         
-        // Reload the projects
-        const { data } = await projectService.getProjects();
-        if (data) {
-          const projectsWithActive = data.map(project => ({
-            ...project,
-            active: project.id === activeProject
-          }));
-          
-          setProjects(projectsWithActive);
+        if (profileError || !userProfile?.organization_id) {
+          console.error('Error loading organization information for subscription:', profileError);
+          return;
         }
-      })
-      .subscribe();
-    
-    return () => {
-      subscription.unsubscribe();
+        
+        // Subscribe to projects table changes for the current organization
+        const subscription = supabase
+          .channel('public:projects')
+          .on('postgres_changes', { 
+            event: '*', 
+            schema: 'public', 
+            table: 'projects',
+            filter: `organization_id=eq.${userProfile.organization_id}`
+          }, async (payload) => {
+            console.log('Projects change received!', payload);
+            
+            // Reload the projects
+            const { data } = await getProjects();
+            if (data) {
+              const projectsWithActive = data.map(project => ({
+                ...project,
+                active: project.id === activeProject
+              }));
+              
+              setProjects(projectsWithActive);
+            }
+          })
+          .subscribe();
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (err) {
+        console.error('Error setting up project subscription:', err);
+      }
     };
+    
+    setupSubscription();
   }, [user, activeProject]);
   
   // Load complete project data including budget
   const loadProjectBudget = async (projectId) => {
     try {
-      const { data, error } = await projectService.getCompleteProject(projectId);
+      const { data, error } = await getCompleteProject(projectId);
       
       if (error) {
         console.error('Error loading project budget:', error);
@@ -579,13 +601,31 @@ export const BudgetProvider = ({ children }) => {
     if (!user) return null;
     
     try {
-      // Add user_id to project data
+      // Get the user's organization ID
+      const { data: userProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('organization_id')
+        .eq('id', user.id)
+        .single();
+      
+      if (profileError) {
+        console.error('Error fetching user profile for organization:', profileError);
+        setError('Failed to get organization information. Please try again later.');
+        return null;
+      }
+      
+      if (!userProfile.organization_id) {
+        setError('No organization found. Please complete your profile setup first.');
+        return null;
+      }
+      
+      // Add organization_id to project data
       const projectPayload = {
         ...projectData,
-        user_id: user.id
+        organization_id: userProfile.organization_id
       };
       
-      const { data, error } = await projectService.createProject(projectPayload);
+      const { data, error } = await createProject(projectPayload);
       
       if (error) {
         console.error('Error creating project:', error);

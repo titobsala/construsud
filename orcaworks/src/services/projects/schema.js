@@ -9,7 +9,7 @@
  * @property {string} [type] - Project type (e.g., 'residential', 'commercial')
  * @property {string} [start_date] - Project start date (ISO format string)
  * @property {string} [currency] - Project currency (default: 'EUR')
- * @property {string} user_id - ID of the user who owns the project
+ * @property {string} organization_id - ID of the organization that owns the project
  * @property {string} created_at - Creation timestamp
  * @property {string} updated_at - Last update timestamp
  */
