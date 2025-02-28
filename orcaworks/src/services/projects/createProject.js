@@ -9,9 +9,14 @@ import { getInitialInternalControlData } from './internalControl';
  */
 export const createProject = async (projectData) => {
   try {
-    // 1. Primeiro, buscar o perfil do usuário para obter o organization_id
-    const user = supabase.auth.user();
-    
+    // Retrieve the user from the session
+    const { data: authData, error: authError } = await supabase.auth.getSession();
+    if (authError || !authData.session) {
+      console.error('Error fetching session:', authError);
+      return { error: new Error('Authentication required') };
+    }
+    const user = authData.session.user;
+
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('organization_id')

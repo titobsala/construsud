@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const [companyName, setCompanyName] = useState('Construsud');
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -41,6 +42,40 @@ export const AuthProvider = ({ children }) => {
       authListener.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    const fetchCompanyName = async () => {
+      if (!user) return;
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('organization_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile?.organization_id) {
+        console.error('Error fetching user organization:', profileError);
+        return;
+      }
+
+      const { data: organization, error: orgError } = await supabase
+        .from('organization')
+        .select('name')
+        .eq('id', profile.organization_id)
+        .single();
+
+      if (orgError) {
+        console.error('Error fetching organization name:', orgError);
+        return;
+      }
+
+      if (organization?.name) {
+        setCompanyName(organization.name);
+      }
+    };
+
+    fetchCompanyName();
+  }, [user]);
 
   // Sign up with email and password
   const signUp = async ({ email, password, fullName, companyName, vatNumber }) => {
@@ -116,10 +151,22 @@ export const AuthProvider = ({ children }) => {
   const getUserProfile = async () => {
     if (!user) return { data: null };
 
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching user profile:', profileError);
+      return { error: profileError };
+    }
+
+    const organization_id = profile.organization_id;
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('organization_id', organization_id)
       .single();
 
     if (error) {
@@ -194,6 +241,7 @@ export const AuthProvider = ({ children }) => {
         session,
         loading,
         authError,
+        companyName,
         signUp,
         signIn,
         signOut,

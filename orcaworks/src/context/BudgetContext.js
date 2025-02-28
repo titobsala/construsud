@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import initialBudget from '../data/initialBudget';
-import { getProjects, getProject } from '../services/projects/getProjects';
+import { getProjects } from '../services/projects/getProjects';
 import { createProject } from '../services/projects/createProject';
 import { getCompleteProject } from '../services/projects/getCompleteProject';
 import { budgetService } from '../services/budgetService';
@@ -119,7 +119,6 @@ export const BudgetProvider = ({ children }) => {
     
     const setupSubscription = async () => {
       try {
-        // First get the user's organization ID
         const { data: userProfile, error: profileError } = await supabase
           .from('profiles')
           .select('organization_id')
@@ -131,14 +130,15 @@ export const BudgetProvider = ({ children }) => {
           return;
         }
         
-        // Subscribe to projects table changes for the current organization
+        const organization_id = userProfile.organization_id;
+        // Use organization_id in the subscription filter
         const subscription = supabase
           .channel('public:projects')
           .on('postgres_changes', { 
             event: '*', 
             schema: 'public', 
             table: 'projects',
-            filter: `organization_id=eq.${userProfile.organization_id}`
+            filter: `organization_id=eq.${organization_id}`
           }, async (payload) => {
             console.log('Projects change received!', payload);
             
@@ -601,7 +601,6 @@ export const BudgetProvider = ({ children }) => {
     if (!user) return null;
     
     try {
-      // Get the user's organization ID
       const { data: userProfile, error: profileError } = await supabase
         .from('profiles')
         .select('organization_id')
@@ -619,10 +618,11 @@ export const BudgetProvider = ({ children }) => {
         return null;
       }
       
-      // Add organization_id to project data
+      const organization_id = userProfile.organization_id;
+      // Use organization_id in project creation
       const projectPayload = {
         ...projectData,
-        organization_id: userProfile.organization_id
+        organization_id
       };
       
       const { data, error } = await createProject(projectPayload);

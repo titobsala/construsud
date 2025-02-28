@@ -21,7 +21,7 @@ function App() {
     loading: budgetLoading
   } = useBudget();
   
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, loading: authLoading, signOut, companyName } = useAuth();
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
@@ -76,6 +76,7 @@ function App() {
         onSignOut={handleSignOut}
         onProfileClick={handleProfileClick}
         userEmail={user.email}
+        companyName={companyName}
       />
       
       <div className="flex flex-1 overflow-hidden">

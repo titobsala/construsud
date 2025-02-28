@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useBudget } from '../../context/BudgetContext';
 
-const Header = ({ toggleSidebar, onSignOut, userEmail, onProfileClick }) => {
+const Header = ({ toggleSidebar, onSignOut, userEmail, onProfileClick, companyName }) => {
   const { budget, formatCurrency } = useBudget();
   const [showUserMenu, setShowUserMenu] = useState(false);
   
@@ -19,7 +19,7 @@ const Header = ({ toggleSidebar, onSignOut, userEmail, onProfileClick }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-red-600 dark:text-red-400">Construsud</h1>
+        <h1 className="text-xl font-bold text-red-600 dark:text-red-400">{companyName}</h1>
       </div>
       
       <div className="text-center flex-1">
