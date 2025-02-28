@@ -16,7 +16,7 @@ const ProfilePage = ({ onClose }) => {
   });
   
   const [organization, setOrganization] = useState({
-    name: '',
+    company_name: '',
     nif: ''
   });
   
@@ -54,7 +54,7 @@ const ProfilePage = ({ onClose }) => {
         // If organization exists, set the data
         if (orgData) {
           setOrganization({
-            name: orgData.name || '',
+            company_name: orgData.company_name || '',
             nif: orgData.nif || ''
           });
         } else {
@@ -64,7 +64,7 @@ const ProfilePage = ({ onClose }) => {
           
           if (company_name && vat_number) {
             setOrganization({
-              name: company_name,
+              company_name: company_name,
               nif: vat_number
             });
             
@@ -126,7 +126,7 @@ const ProfilePage = ({ onClose }) => {
       if (orgData) {
         // Update existing organization
         const { error: updateOrgError } = await userService.updateOrganization(orgData.id, {
-          name: organization.name,
+          company_name: organization.company_name,
           nif: organization.nif
         });
         
@@ -138,7 +138,7 @@ const ProfilePage = ({ onClose }) => {
       } else {
         // Create new organization if it doesn't exist
         const { error: createOrgError } = await userService.createOrganization(
-          organization.name,
+          organization.company_name,
           organization.nif,
           user.id
         );
@@ -263,16 +263,16 @@ const ProfilePage = ({ onClose }) => {
                 
                 <div className="mb-4">
                   <label 
-                    htmlFor="name" 
+                    htmlFor="company_name" 
                     className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                   >
                     Company Name
                   </label>
                   <input
-                    id="name"
-                    name="name"
+                    id="company_name"
+                    name="company_name"
                     type="text"
-                    value={organization.name}
+                    value={organization.company_name}
                     onChange={handleOrganizationChange}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                     required

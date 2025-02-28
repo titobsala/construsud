@@ -66,11 +66,11 @@ export const userService = {
   },
   
   // Create a new organization
-  async createOrganization(name, nif, adminId) {
+  async createOrganization(company_name, nif, adminId) {
     const { data, error } = await supabase
       .from('organizations')
       .insert([
-        { name, nif, admin_id: adminId }
+        { company_name, nif, admin_id: adminId }
       ])
       .select()
       .single();

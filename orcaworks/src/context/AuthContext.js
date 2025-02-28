@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
-  const [companyName, setCompanyName] = useState('Construsud');
+  const [companyName, setCompanyName] = useState('');
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }) => {
       }
 
       const { data: organization, error: orgError } = await supabase
-        .from('organization')
-        .select('name')
+        .from('organizations')
+        .select('company_name')
         .eq('id', profile.organization_id)
         .single();
 
@@ -69,8 +69,8 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      if (organization?.name) {
-        setCompanyName(organization.name);
+      if (organization?.company_name) {
+        setCompanyName(organization.company_name);
       }
     };
 
