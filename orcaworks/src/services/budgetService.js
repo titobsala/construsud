@@ -160,6 +160,11 @@ export const budgetService = {
     // Calculate the total value
     const totalValue = itemData.QTD * itemData.VALOR_UNITARIO;
     
+    // Prepare internal control data if it exists
+    const internalControlData = itemData.internal_control ? {
+      internal_control: itemData.internal_control
+    } : {};
+    
     const { data, error } = await supabase
       .from('budget_items')
       .insert([{
@@ -169,7 +174,8 @@ export const budgetService = {
         quantity: itemData.QTD,
         unit_price: itemData.VALOR_UNITARIO,
         total_value: totalValue,
-        position
+        position,
+        ...internalControlData
       }])
       .select()
       .single();
@@ -182,11 +188,12 @@ export const budgetService = {
     // Transform the item to match the app's data structure
     const transformedItem = {
       id: itemId,
-      item: data.item,
+      ITEM: data.item,
       UNIDADE: data.unit,
       QTD: data.quantity,
       VALOR_UNITARIO: data.unit_price,
-      VALOR: data.total_value
+      VALOR: data.total_value,
+      internal_control: data.internal_control
     };
     
     return { data: transformedItem };
@@ -197,15 +204,23 @@ export const budgetService = {
     // Calculate the total value
     const totalValue = updates.QTD * updates.VALOR_UNITARIO;
     
+    // Prepare update data with internal control if provided
+    const updateData = {
+      item: updates.ITEM,
+      unit: updates.UNIDADE,
+      quantity: updates.QTD,
+      unit_price: updates.VALOR_UNITARIO,
+      total_value: totalValue
+    };
+    
+    // Add internal control data if it exists
+    if (updates.internal_control) {
+      updateData.internal_control = updates.internal_control;
+    }
+    
     const { data, error } = await supabase
       .from('budget_items')
-      .update({
-        item: updates.ITEM,
-        unit: updates.UNIDADE,
-        quantity: updates.QTD,
-        unit_price: updates.VALOR_UNITARIO,
-        total_value: totalValue
-      })
+      .update(updateData)
       .eq('id', itemId)
       .select()
       .single();
@@ -218,11 +233,12 @@ export const budgetService = {
     // Transform the item to match the app's data structure
     const transformedItem = {
       id: data.id,
-      ITEM: data.materi,
+      ITEM: data.item,
       UNIDADE: data.unit,
       QTD: data.quantity,
       VALOR_UNITARIO: data.unit_price,
-      VALOR: data.total_value
+      VALOR: data.total_value,
+      internal_control: data.internal_control
     };
     
     return { data: transformedItem };

@@ -63,6 +63,7 @@ export const BudgetProvider = ({ children }) => {
   const [showNewChapterModal, setShowNewChapterModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [operationInProgress, setOperationInProgress] = useState(false);
   const [error, setError] = useState(null);
   
   // Load user projects when user is authenticated
@@ -113,7 +114,7 @@ export const BudgetProvider = ({ children }) => {
     loadProjects();
   }, [user]);
   
-  // Setup subscription to update projects list in real-time
+  // Setup subscription to update projects list and budget data in real-time
   useEffect(() => {
     if (!user) return;
     
@@ -131,35 +132,92 @@ export const BudgetProvider = ({ children }) => {
         }
         
         const organization_id = userProfile.organization_id;
-        // Use organization_id in the subscription filter
-        const subscription = supabase
-          .channel('public:projects')
-          .on('postgres_changes', { 
-            event: '*', 
-            schema: 'public', 
-            table: 'projects',
-            filter: `organization_id=eq.${organization_id}`
-          }, async (payload) => {
-            console.log('Projects change received!', payload);
+        
+        // Create a channel for all subscriptions
+        const channel = supabase.channel('realtime-updates');
+        
+        // Subscribe to project changes
+        channel.on('postgres_changes', { 
+          event: '*', 
+          schema: 'public', 
+          table: 'projects',
+          filter: `organization_id=eq.${organization_id}`
+        }, async (payload) => {
+          console.log('Projects change received!', payload);
+          
+          // Reload the projects
+          const { data } = await getProjects();
+          if (data) {
+            const projectsWithActive = data.map(project => ({
+              ...project,
+              active: project.id === activeProject
+            }));
             
-            // Reload the projects
-            const { data } = await getProjects();
-            if (data) {
-              const projectsWithActive = data.map(project => ({
-                ...project,
-                active: project.id === activeProject
-              }));
-              
-              setProjects(projectsWithActive);
+            setProjects(projectsWithActive);
+          }
+        });
+        
+        // Subscribe to chapter changes if there's an active project
+        if (activeProject) {
+          channel.on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'chapters',
+            filter: `project_id=eq.${activeProject}`
+          }, async (payload) => {
+            console.log('Chapter change received!', payload);
+            // Reload the complete project data
+            await loadProjectBudget(activeProject);
+          });
+          
+          // Subscribe to budget items changes
+          channel.on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'budget_items'
+          }, async (payload) => {
+            console.log('Budget item change received!', payload);
+            // Get the chapter id from the payload
+            const chapterId = payload.new?.chapter_id || payload.old?.chapter_id;
+            
+            if (chapterId) {
+              // Check if this chapter belongs to the current project
+              const { data: chapter } = await supabase
+                .from('chapters')
+                .select('project_id')
+                .eq('id', chapterId)
+                .single();
+                
+              if (chapter && chapter.project_id === activeProject) {
+                // Reload the complete project data
+                await loadProjectBudget(activeProject);
+              }
             }
-          })
-          .subscribe();
+          });
+          
+          // Subscribe to internal control changes
+          channel.on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'internal_control',
+            filter: `project_id=eq.${activeProject}`
+          }, async (payload) => {
+            console.log('Internal control change received!', payload);
+            // Reload the complete project data
+            await loadProjectBudget(activeProject);
+          });
+        }
+        
+        // Subscribe to the channel
+        channel.subscribe(status => {
+          console.log('Realtime subscription status:', status);
+        });
         
         return () => {
-          subscription.unsubscribe();
+          channel.unsubscribe();
         };
       } catch (err) {
-        console.error('Error setting up project subscription:', err);
+        console.error('Error setting up subscriptions:', err);
       }
     };
     
@@ -225,8 +283,26 @@ export const BudgetProvider = ({ children }) => {
       }));
     });
     
-    // Recalculate total costs
-    const custoSeco = calculateTotalMaterialCost();
+    // Recalculate total costs - using item-level real costs when available
+    let custoSeco = 0;
+    let itemRealCostTotal = 0;
+    let itemsWithRealCost = 0;
+    
+    // Calculate costs considering items with internal_control data
+    Object.keys(updatedChapters).forEach(chapterKey => {
+      updatedChapters[chapterKey].items.forEach(item => {
+        custoSeco += item.VALOR;
+        
+        // If item has real cost data, use it for internal calculations
+        if (item.internal_control && item.internal_control.real_cost) {
+          const realCost = parseFloat(item.internal_control.real_cost);
+          if (!isNaN(realCost)) {
+            itemRealCostTotal += realCost;
+            itemsWithRealCost++;
+          }
+        }
+      });
+    });
     
     // Calculate additional costs
     const diversos = budget.CONTROLE_INTERNO.DIVERSOS.items[0];
@@ -242,8 +318,11 @@ export const BudgetProvider = ({ children }) => {
       0
     );
     
+    // Use real costs when available for calculations
+    const adjustedCustoSeco = itemsWithRealCost > 0 ? itemRealCostTotal : custoSeco;
+    
     // Calculate total cost
-    const custoTotal = custoSeco + diversosTotal + subEmpreiteirosTotal + amortizacoesTotal;
+    const custoTotal = adjustedCustoSeco + diversosTotal + subEmpreiteirosTotal + amortizacoesTotal;
     
     // Calculate margin and sale value
     const margemPercentual = budget.CONTROLE_INTERNO.VENDA.items[0].Margem_Percentual;
@@ -279,8 +358,11 @@ export const BudgetProvider = ({ children }) => {
 
   // Add new item to chapter
   const addItem = async (chapterKey, newItem) => {
-    // Update local state first for immediate UI feedback
     const chapter = budget.chapters[chapterKey];
+    
+    setOperationInProgress(true);
+    
+    // Create item for immediate UI update
     const localItemId = `${chapterKey.split(' ')[1]}-${chapter.items.length + 1}`;
     const calculatedValue = calculateItemValue(newItem.QTD, newItem.VALOR_UNITARIO);
     
@@ -300,6 +382,7 @@ export const BudgetProvider = ({ children }) => {
       }
     };
     
+    // Update local state immediately
     setBudget({
       ...budget,
       chapters: updatedChapters
@@ -318,57 +401,90 @@ export const BudgetProvider = ({ children }) => {
         
         if (chaptersError) {
           console.error('Error finding chapter:', chaptersError);
+          // Revert local state
+          const revertedItems = chapter.items.filter(item => item.id !== localItemId);
+          
+          const revertedChapters = {
+            ...budget.chapters,
+            [chapterKey]: {
+              ...chapter,
+              items: revertedItems
+            }
+          };
+          
+          setBudget({
+            ...budget,
+            chapters: revertedChapters
+          });
+          
+          setOperationInProgress(false);
           return;
         }
         
         // Add item to database
-        const { error } = await budgetService.createItem(chapters.id, newItem);
+        const { data, error } = await budgetService.createItem(chapters.id, newItem);
         
         if (error) {
           console.error('Error adding item to database:', error);
-          // Could revert local state here if needed
+          // Revert local state
+          const revertedItems = chapter.items.filter(item => item.id !== localItemId);
+          
+          const revertedChapters = {
+            ...budget.chapters,
+            [chapterKey]: {
+              ...chapter,
+              items: revertedItems
+            }
+          };
+          
+          setBudget({
+            ...budget,
+            chapters: revertedChapters
+          });
+          
+          setOperationInProgress(false);
           return;
         }
         
-        // Update local state with server generated ID if needed
-        // Currently using the same item ID format
+        // If we have a server-generated ID, update the local item
+        if (data && data.id && data.id !== localItemId) {
+          const updatedItemsWithServerId = chapter.items.map(item => 
+            item.id === localItemId ? { ...item, id: data.id } : item
+          );
+          
+          const updatedChaptersWithServerId = {
+            ...budget.chapters,
+            [chapterKey]: {
+              ...chapter,
+              items: updatedItemsWithServerId
+            }
+          };
+          
+          setBudget({
+            ...budget,
+            chapters: updatedChaptersWithServerId
+          });
+        }
+        
+        recalculateBudget();
+        setOperationInProgress(false);
       } catch (err) {
         console.error('Unexpected error adding item:', err);
+        setOperationInProgress(false);
       }
+    } else {
+      // If not connected to Supabase, just update local state
+      recalculateBudget();
+      setOperationInProgress(false);
     }
-    
-    recalculateBudget();
   };
 
   // Update existing item
   const updateItem = async (chapterKey, itemId, updatedItem) => {
-    // Update local state first for immediate UI feedback
     const chapter = budget.chapters[chapterKey];
     const itemIndex = chapter.items.findIndex(item => item.id === itemId);
     
     if (itemIndex === -1) return;
-    
-    const calculatedValue = calculateItemValue(updatedItem.QTD, updatedItem.VALOR_UNITARIO);
-    
-    const updatedItems = [...chapter.items];
-    updatedItems[itemIndex] = {
-      ...updatedItems[itemIndex],
-      ...updatedItem,
-      VALOR: calculatedValue
-    };
-    
-    const updatedChapters = {
-      ...budget.chapters,
-      [chapterKey]: {
-        ...chapter,
-        items: updatedItems
-      }
-    };
-    
-    setBudget({
-      ...budget,
-      chapters: updatedChapters
-    });
     
     // If connected to Supabase, persist to database
     if (user && activeProject) {
@@ -403,38 +519,71 @@ export const BudgetProvider = ({ children }) => {
         
         if (error) {
           console.error('Error updating item in database:', error);
-          // Could revert local state here if needed
+          return;
         }
+        
+        // Also update local state for immediate UI feedback
+        // This ensures UI is updated even before the Supabase subscription fires
+        const calculatedValue = calculateItemValue(updatedItem.QTD, updatedItem.VALOR_UNITARIO);
+        
+        const updatedItems = [...chapter.items];
+        updatedItems[itemIndex] = {
+          ...updatedItems[itemIndex],
+          ...updatedItem,
+          VALOR: calculatedValue
+        };
+        
+        const updatedChapters = {
+          ...budget.chapters,
+          [chapterKey]: {
+            ...chapter,
+            items: updatedItems
+          }
+        };
+        
+        setBudget({
+          ...budget,
+          chapters: updatedChapters
+        });
+        
+        recalculateBudget();
       } catch (err) {
         console.error('Unexpected error updating item:', err);
       }
+    } else {
+      // If not connected to Supabase, just update local state
+      const calculatedValue = calculateItemValue(updatedItem.QTD, updatedItem.VALOR_UNITARIO);
+      
+      const updatedItems = [...chapter.items];
+      updatedItems[itemIndex] = {
+        ...updatedItems[itemIndex],
+        ...updatedItem,
+        VALOR: calculatedValue
+      };
+      
+      const updatedChapters = {
+        ...budget.chapters,
+        [chapterKey]: {
+          ...chapter,
+          items: updatedItems
+        }
+      };
+      
+      setBudget({
+        ...budget,
+        chapters: updatedChapters
+      });
+      
+      recalculateBudget();
     }
-    
-    recalculateBudget();
   };
 
   // Delete item
   const deleteItem = async (chapterKey, itemId) => {
-    // Update local state first for immediate UI feedback
     const chapter = budget.chapters[chapterKey];
     const itemIndex = chapter.items.findIndex(item => item.id === itemId);
     
     if (itemIndex === -1) return;
-    
-    const updatedItems = chapter.items.filter(item => item.id !== itemId);
-    
-    const updatedChapters = {
-      ...budget.chapters,
-      [chapterKey]: {
-        ...chapter,
-        items: updatedItems
-      }
-    };
-    
-    setBudget({
-      ...budget,
-      chapters: updatedChapters
-    });
     
     // If connected to Supabase, persist to database
     if (user && activeProject) {
@@ -469,51 +618,117 @@ export const BudgetProvider = ({ children }) => {
         
         if (error) {
           console.error('Error deleting item from database:', error);
-          // Could revert local state here if needed
+          return;
         }
+        
+        // Also update local state for immediate UI feedback
+        // This ensures UI is updated even before the Supabase subscription fires
+        const updatedItems = chapter.items.filter(item => item.id !== itemId);
+        
+        const updatedChapters = {
+          ...budget.chapters,
+          [chapterKey]: {
+            ...chapter,
+            items: updatedItems
+          }
+        };
+        
+        setBudget({
+          ...budget,
+          chapters: updatedChapters
+        });
+        
+        recalculateBudget();
       } catch (err) {
         console.error('Unexpected error deleting item:', err);
       }
+    } else {
+      // If not connected to Supabase, just update local state
+      const updatedItems = chapter.items.filter(item => item.id !== itemId);
+      
+      const updatedChapters = {
+        ...budget.chapters,
+        [chapterKey]: {
+          ...chapter,
+          items: updatedItems
+        }
+      };
+      
+      setBudget({
+        ...budget,
+        chapters: updatedChapters
+      });
+      
+      recalculateBudget();
     }
-    
-    recalculateBudget();
   };
 
   // Add new chapter
   const addChapter = async (chapterKey, header) => {
     if (budget.chapters[chapterKey]) return false; // Chapter already exists
     
-    // Update local state first for immediate UI feedback
-    const updatedChapters = {
-      ...budget.chapters,
-      [chapterKey]: {
-        header,
-        items: []
-      }
-    };
-    
-    setBudget({
-      ...budget,
-      chapters: updatedChapters
-    });
+    setOperationInProgress(true);
     
     // If connected to Supabase, persist to database
     if (user && activeProject) {
       try {
+        // Also update local state for immediate UI feedback
+        // This ensures UI is updated even before the database operation completes
+        const updatedChapters = {
+          ...budget.chapters,
+          [chapterKey]: {
+            header,
+            items: []
+          }
+        };
+        
+        setBudget({
+          ...budget,
+          chapters: updatedChapters
+        });
+        
         const { error } = await budgetService.createChapter(activeProject, chapterKey, header);
         
         if (error) {
           console.error('Error adding chapter to database:', error);
-          // Could revert local state here if needed
+          // Revert the local state change
+          const revertedChapters = { ...budget.chapters };
+          delete revertedChapters[chapterKey];
+          
+          setBudget({
+            ...budget,
+            chapters: revertedChapters
+          });
+          
+          setOperationInProgress(false);
           return false;
         }
+        
+        setOperationInProgress(false);
+        return true;
       } catch (err) {
         console.error('Unexpected error adding chapter:', err);
+        setOperationInProgress(false);
         return false;
       }
+    } else {
+      // If not connected to Supabase, just update local state
+      const updatedChapters = {
+        ...budget.chapters,
+        [chapterKey]: {
+          header,
+          items: []
+        }
+      };
+      
+      setBudget({
+        ...budget,
+        chapters: updatedChapters
+      });
+      
+      setOperationInProgress(false);
+      return true;
     }
-    
-    return true;
   };
 
   // Update margin percentage
@@ -633,7 +848,7 @@ export const BudgetProvider = ({ children }) => {
         return null;
       }
       
-      // Add the project to local state
+      // Add the project to local state for immediate UI feedback
       const newProject = {
         ...data,
         active: true // Make the new project active
@@ -650,6 +865,9 @@ export const BudgetProvider = ({ children }) => {
       
       // Load the new project's budget
       await loadProjectBudget(newProject.id);
+      
+      // The Supabase subscription in the useEffect will handle updating the
+      // projects list when the server confirms the creation, ensuring data consistency
       
       return newProject.id;
     } catch (err) {
@@ -709,6 +927,7 @@ export const BudgetProvider = ({ children }) => {
         
         // Status
         loading,
+        operationInProgress,
         error
       }}
     >
