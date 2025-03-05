@@ -6,9 +6,11 @@ const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [vatNumber, setVatNumber] = useState('');
   const [message, setMessage] = useState(null);
   
-  const { signIn, signUp, authError } = useAuth();
+  const { signIn, signUp, authError, resetPassword } = useAuth();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +28,29 @@ const AuthForm = () => {
         // Successfully signed in
         setMessage({ type: 'success', text: 'Signed in successfully!' });
       } else {
+        // Validate required fields for registration
         if (!fullName) {
           setMessage({ type: 'error', text: 'Please enter your full name' });
           return;
         }
         
-        const { error } = await signUp({ email, password, fullName });
+        if (!companyName) {
+          setMessage({ type: 'error', text: 'Please enter your company name' });
+          return;
+        }
+        
+        if (!vatNumber) {
+          setMessage({ type: 'error', text: 'Please enter your VAT number' });
+          return;
+        }
+        
+        const { error } = await signUp({ 
+          email, 
+          password, 
+          fullName,
+          companyName,
+          vatNumber
+        });
         
         if (error) {
           setMessage({ type: 'error', text: error.message });
@@ -46,6 +65,29 @@ const AuthForm = () => {
         // Reset form and switch to login
         setIsLogin(true);
       }
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message });
+    }
+  };
+  
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setMessage({ type: 'error', text: 'Please enter your email address' });
+      return;
+    }
+    
+    try {
+      const { error } = await resetPassword(email);
+      
+      if (error) {
+        setMessage({ type: 'error', text: error.message });
+        return;
+      }
+      
+      setMessage({ 
+        type: 'success', 
+        text: 'Password reset instructions have been sent to your email.'
+      });
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
     }
@@ -75,22 +117,58 @@ const AuthForm = () => {
       
       <form onSubmit={handleSubmit}>
         {!isLogin && (
-          <div className="mb-4">
-            <label 
-              htmlFor="fullName" 
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Full Name
-            </label>
-            <input
-              id="fullName"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
-              required
-            />
-          </div>
+          <>
+            <div className="mb-4">
+              <label 
+                htmlFor="fullName" 
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Full Name
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label 
+                htmlFor="companyName" 
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Company Name
+              </label>
+              <input
+                id="companyName"
+                type="text"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label 
+                htmlFor="vatNumber" 
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                VAT Number
+              </label>
+              <input
+                id="vatNumber"
+                type="text"
+                value={vatNumber}
+                onChange={(e) => setVatNumber(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
+          </>
         )}
         
         <div className="mb-4">
@@ -139,6 +217,7 @@ const AuthForm = () => {
           {isLogin && (
             <button
               type="button"
+              onClick={handleForgotPassword}
               className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
             >
               Forgot password?

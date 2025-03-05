@@ -1,0 +1,56 @@
+[
+    {
+      "ddl": "CREATE TABLE budget_items (position integer NOT NULL, created_at timestamp with time zone NOT NULL DEFAULT now(), updated_at timestamp with time zone NOT NULL DEFAULT now(), id uuid NOT NULL DEFAULT uuid_generate_v4(), unit text NOT NULL, material text NOT NULL, quantity numeric NOT NULL, unit_price numeric NOT NULL, total_value numeric NOT NULL, chapter_id uuid NOT NULL);"
+    },
+    {
+      "ddl": "CREATE TABLE chapters (chapter_key text NOT NULL, position integer NOT NULL, project_id uuid NOT NULL, header text NOT NULL, id uuid NOT NULL DEFAULT uuid_generate_v4(), created_at timestamp with time zone NOT NULL DEFAULT now(), updated_at timestamp with time zone NOT NULL DEFAULT now());"
+    },
+    {
+      "ddl": "CREATE TABLE internal_control (created_at timestamp with time zone NOT NULL DEFAULT now(), id uuid NOT NULL DEFAULT uuid_generate_v4(), project_id uuid NOT NULL, data jsonb NOT NULL, updated_at timestamp with time zone NOT NULL DEFAULT now(), type text NOT NULL);"
+    },
+    {
+      "ddl": "CREATE TABLE invitations (role text NOT NULL DEFAULT 'member'::text, id uuid NOT NULL DEFAULT uuid_generate_v4(), organization_id uuid NOT NULL, email text NOT NULL, token text NOT NULL, created_at timestamp with time zone NOT NULL DEFAULT now());"
+    },
+    {
+      "ddl": "CREATE TABLE organizations (company_name text NOT NULL, updated_at timestamp with time zone NOT NULL DEFAULT now(), created_at timestamp with time zone NOT NULL DEFAULT now(), id uuid NOT NULL DEFAULT uuid_generate_v4(), admin_id uuid NOT NULL, nif text NOT NULL);"
+    },
+    {
+      "ddl": "CREATE TABLE profiles (role text NOT NULL DEFAULT 'member'::text, full_name text NOT NULL, avatar_url text, id uuid NOT NULL, created_at timestamp with time zone NOT NULL DEFAULT now(), updated_at timestamp with time zone NOT NULL DEFAULT now(), organization_id uuid);"
+    },
+    {
+      "ddl": "CREATE TABLE profiles_with_company (organization_id uuid, id uuid, created_at timestamp with time zone, updated_at timestamp with time zone, full_name text, avatar_url text, role text, company_name text);"
+    },
+    {
+      "ddl": "CREATE TABLE project_settings (updated_at timestamp with time zone NOT NULL DEFAULT now(), show_all_chapters boolean DEFAULT true, number_format text DEFAULT 'PT-PT'::text, currency text DEFAULT 'EUR'::text, decimal_places integer DEFAULT 2, created_at timestamp with time zone NOT NULL DEFAULT now(), project_id uuid NOT NULL, id uuid NOT NULL DEFAULT uuid_generate_v4(), default_margin numeric DEFAULT 30.00);"
+    },
+    {
+      "ddl": "CREATE TABLE projects (name text NOT NULL, start_date date, client text, id uuid NOT NULL DEFAULT uuid_generate_v4(), description text, type text, currency text DEFAULT 'EUR'::text, updated_at timestamp with time zone NOT NULL DEFAULT now(), created_at timestamp with time zone NOT NULL DEFAULT now(), organization_id uuid NOT NULL);"
+    },
+    {
+      "ddl": "ALTER TABLE projects ADD CONSTRAINT projects_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id);"
+    },
+    {
+      "ddl": "ALTER TABLE organizations ADD CONSTRAINT organizations_admin_id_fkey FOREIGN KEY (admin_id) REFERENCES auth.users(id);"
+    },
+    {
+      "ddl": "ALTER TABLE profiles ADD CONSTRAINT profiles_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id);"
+    },
+    {
+      "ddl": "ALTER TABLE invitations ADD CONSTRAINT invitations_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id);"
+    },
+    {
+      "ddl": "ALTER TABLE profiles ADD CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id);"
+    },
+    {
+      "ddl": "ALTER TABLE chapters ADD CONSTRAINT chapters_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id);"
+    },
+    {
+      "ddl": "ALTER TABLE budget_items ADD CONSTRAINT budget_items_chapter_id_fkey FOREIGN KEY (chapter_id) REFERENCES chapters(id);"
+    },
+    {
+      "ddl": "ALTER TABLE internal_control ADD CONSTRAINT internal_control_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id);"
+    },
+    {
+      "ddl": "ALTER TABLE project_settings ADD CONSTRAINT project_settings_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id);"
+    }
+]

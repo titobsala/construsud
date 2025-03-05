@@ -19,7 +19,7 @@ const ChapterItem = ({ chapterKey, chapter }) => {
     setCurrentItem({
       chapterKey,
       item: {
-        MATERIAL: '',
+        ITEM: '',
         UNIDADE: '',
         QTD: 0,
         VALOR_UNITARIO: 0,

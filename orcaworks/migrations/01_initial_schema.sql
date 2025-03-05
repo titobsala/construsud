@@ -1,3 +1,5 @@
+-- Db as for 26/02/2025
+
 -- Create profiles table (extends auth.users)
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users PRIMARY KEY,

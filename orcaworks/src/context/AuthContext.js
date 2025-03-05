@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const [companyName, setCompanyName] = useState('');
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -42,29 +43,71 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchCompanyName = async () => {
+      if (!user) return;
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('organization_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile?.organization_id) {
+        console.error('Error fetching user organization:', profileError);
+        return;
+      }
+
+      const { data: organization, error: orgError } = await supabase
+        .from('organizations')
+        .select('company_name')
+        .eq('id', profile.organization_id)
+        .single();
+
+      if (orgError) {
+        console.error('Error fetching organization name:', orgError);
+        return;
+      }
+
+      if (organization?.company_name) {
+        setCompanyName(organization.company_name);
+      }
+    };
+
+    fetchCompanyName();
+  }, [user]);
+
   // Sign up with email and password
-  const signUp = async ({ email, password, fullName }) => {
+  const signUp = async ({ email, password, fullName, companyName, vatNumber }) => {
     setLoading(true);
     setAuthError(null);
     
-    const { data, error } = await supabase.auth.signUp({
+    // First, create the organization
+    const { data: orgData, error: orgError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
+          company_name: companyName,
+          vat_number: vatNumber,
         },
       },
     });
 
-    if (error) {
-      setAuthError(error.message);
+    if (orgError) {
+      setAuthError(orgError.message);
       setLoading(false);
-      return { error };
+      return { error: orgError };
     }
+    
+    // Once registered, the trigger in the database will create a profile
+    // and handle_new_user() will set up the basic profile.
+    // The organization creation will be handled after email confirmation
+    // when the user first signs in.
 
     setLoading(false);
-    return { data };
+    return { data: orgData };
   };
 
   // Sign in with email and password
@@ -108,10 +151,22 @@ export const AuthProvider = ({ children }) => {
   const getUserProfile = async () => {
     if (!user) return { data: null };
 
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching user profile:', profileError);
+      return { error: profileError };
+    }
+
+    const organization_id = profile.organization_id;
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('organization_id', organization_id)
       .single();
 
     if (error) {
@@ -186,6 +241,7 @@ export const AuthProvider = ({ children }) => {
         session,
         loading,
         authError,
+        companyName,
         signUp,
         signIn,
         signOut,
