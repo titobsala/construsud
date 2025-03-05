@@ -3,7 +3,6 @@ import { useBudget } from '../../context/BudgetContext';
 
 const EditChapterModal = () => {
   const { 
-    showEditChapterModal, 
     setShowEditChapterModal, 
     currentChapter,
     updateChapter,
