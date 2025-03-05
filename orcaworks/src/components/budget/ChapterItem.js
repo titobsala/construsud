@@ -9,7 +9,9 @@ const ChapterItem = ({ chapterKey, chapter }) => {
     calculateChapterTotal,
     formatCurrency,
     setShowEditItemModal,
-    setCurrentItem
+    setCurrentItem,
+    setShowEditChapterModal,
+    setCurrentChapter
   } = useBudget();
   
   const isActive = activeChapter === chapterKey;
@@ -30,6 +32,15 @@ const ChapterItem = ({ chapterKey, chapter }) => {
     setShowEditItemModal(true);
   };
 
+  const handleEditChapter = (e) => {
+    e.stopPropagation(); // Prevent chapter activation when clicking edit button
+    setCurrentChapter({
+      chapterKey,
+      chapter
+    });
+    setShowEditChapterModal(true);
+  };
+
   return (
     <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800 transition-all duration-200 hover:shadow-md">
       <div 
@@ -47,6 +58,15 @@ const ChapterItem = ({ chapterKey, chapter }) => {
           <h3 className="font-medium text-gray-800 dark:text-gray-200">{chapter.header}</h3>
         </div>
         <div className="flex items-center space-x-4">
+          <button
+            onClick={handleEditChapter}
+            className="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 focus:outline-none"
+            title="Editar capítulo"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
           <span className={`font-medium ${isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}>
             {formatCurrency(total)}
           </span>

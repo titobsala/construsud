@@ -6,6 +6,7 @@ import ChapterList from './components/budget/ChapterList';
 import InternalControl from './components/budget/InternalControl';
 import EditItemModal from './components/modals/EditItemModal';
 import NewChapterModal from './components/modals/NewChapterModal';
+import EditChapterModal from './components/modals/EditChapterModal';
 import NewProjectModal from './components/modals/NewProjectModal';
 import ProfileModal from './components/modals/ProfileModal';
 import AuthForm from './components/auth/AuthForm';
@@ -16,6 +17,7 @@ function App() {
   const { 
     showEditItemModal, 
     showNewChapterModal,
+    showEditChapterModal,
     addProject,
     setActiveProjectById,
     loading: budgetLoading
@@ -111,6 +113,7 @@ function App() {
 
       {showEditItemModal && <EditItemModal />}
       {showNewChapterModal && <NewChapterModal />}
+      {showEditChapterModal && <EditChapterModal />}
       <NewProjectModal 
         isOpen={showNewProjectModal} 
         onClose={() => setShowNewProjectModal(false)}

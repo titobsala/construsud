@@ -61,7 +61,9 @@ export const BudgetProvider = ({ children }) => {
   const [activeChapter, setActiveChapter] = useState('CAR 1');
   const [showEditItemModal, setShowEditItemModal] = useState(false);
   const [showNewChapterModal, setShowNewChapterModal] = useState(false);
+  const [showEditChapterModal, setShowEditChapterModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  const [currentChapter, setCurrentChapter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [operationInProgress, setOperationInProgress] = useState(false);
   const [error, setError] = useState(null);
@@ -730,6 +732,162 @@ export const BudgetProvider = ({ children }) => {
       return true;
     }
   };
+  
+  // Update existing chapter
+  const updateChapter = async (chapterKey, header) => {
+    const chapter = budget.chapters[chapterKey];
+    if (!chapter) return false;
+    
+    setOperationInProgress(true);
+    
+    // If connected to Supabase, persist to database
+    if (user && activeProject) {
+      try {
+        // Find the chapter ID in the database
+        const { data: chapterData, error: fetchError } = await supabase
+          .from('chapters')
+          .select('id')
+          .eq('project_id', activeProject)
+          .eq('chapter_key', chapterKey)
+          .single();
+        
+        if (fetchError) {
+          console.error('Error finding chapter for update:', fetchError);
+          setOperationInProgress(false);
+          return false;
+        }
+        
+        // Update chapter in database
+        const { error } = await budgetService.updateChapter(chapterData.id, { header });
+        
+        if (error) {
+          console.error('Error updating chapter in database:', error);
+          setOperationInProgress(false);
+          return false;
+        }
+        
+        // Update local state for immediate UI feedback
+        const updatedChapters = {
+          ...budget.chapters,
+          [chapterKey]: {
+            ...chapter,
+            header
+          }
+        };
+        
+        setBudget({
+          ...budget,
+          chapters: updatedChapters
+        });
+        
+        setOperationInProgress(false);
+        return true;
+      } catch (err) {
+        console.error('Unexpected error updating chapter:', err);
+        setOperationInProgress(false);
+        return false;
+      }
+    } else {
+      // If not connected to Supabase, just update local state
+      const updatedChapters = {
+        ...budget.chapters,
+        [chapterKey]: {
+          ...chapter,
+          header
+        }
+      };
+      
+      setBudget({
+        ...budget,
+        chapters: updatedChapters
+      });
+      
+      setOperationInProgress(false);
+      return true;
+    }
+  };
+  
+  // Delete chapter
+  const deleteChapter = async (chapterKey) => {
+    const chapter = budget.chapters[chapterKey];
+    if (!chapter) return false;
+    
+    setOperationInProgress(true);
+    
+    // If connected to Supabase, persist to database
+    if (user && activeProject) {
+      try {
+        // Find the chapter ID in the database
+        const { data: chapterData, error: fetchError } = await supabase
+          .from('chapters')
+          .select('id')
+          .eq('project_id', activeProject)
+          .eq('chapter_key', chapterKey)
+          .single();
+        
+        if (fetchError) {
+          console.error('Error finding chapter for deletion:', fetchError);
+          setOperationInProgress(false);
+          return false;
+        }
+        
+        // Delete chapter in database
+        const { error } = await budgetService.deleteChapter(chapterData.id);
+        
+        if (error) {
+          console.error('Error deleting chapter from database:', error);
+          setOperationInProgress(false);
+          return false;
+        }
+        
+        // Update local state for immediate UI feedback
+        const updatedChapters = { ...budget.chapters };
+        delete updatedChapters[chapterKey];
+        
+        // If the active chapter is the one being deleted, set the first remaining chapter as active
+        let newActiveChapter = activeChapter;
+        if (activeChapter === chapterKey) {
+          const remainingChapters = Object.keys(updatedChapters);
+          newActiveChapter = remainingChapters.length > 0 ? remainingChapters[0] : null;
+          setActiveChapter(newActiveChapter);
+        }
+        
+        setBudget({
+          ...budget,
+          chapters: updatedChapters
+        });
+        
+        setOperationInProgress(false);
+        recalculateBudget();
+        return true;
+      } catch (err) {
+        console.error('Unexpected error deleting chapter:', err);
+        setOperationInProgress(false);
+        return false;
+      }
+    } else {
+      // If not connected to Supabase, just update local state
+      const updatedChapters = { ...budget.chapters };
+      delete updatedChapters[chapterKey];
+      
+      // If the active chapter is the one being deleted, set the first remaining chapter as active
+      let newActiveChapter = activeChapter;
+      if (activeChapter === chapterKey) {
+        const remainingChapters = Object.keys(updatedChapters);
+        newActiveChapter = remainingChapters.length > 0 ? remainingChapters[0] : null;
+        setActiveChapter(newActiveChapter);
+      }
+      
+      setBudget({
+        ...budget,
+        chapters: updatedChapters
+      });
+      
+      setOperationInProgress(false);
+      recalculateBudget();
+      return true;
+    }
+  };
 
   // Update margin percentage
   const updateMarginPercentage = async (percentage) => {
@@ -906,12 +1064,18 @@ export const BudgetProvider = ({ children }) => {
         setShowEditItemModal,
         showNewChapterModal,
         setShowNewChapterModal,
+        showEditChapterModal,
+        setShowEditChapterModal,
         currentItem,
         setCurrentItem,
+        currentChapter,
+        setCurrentChapter,
         addItem,
         updateItem,
         deleteItem,
         addChapter,
+        updateChapter,
+        deleteChapter,
         calculateChapterTotal,
         calculateTotalMaterialCost,
         updateMarginPercentage,
