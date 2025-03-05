@@ -164,7 +164,7 @@ export const budgetService = {
       .from('budget_items')
       .insert([{
         chapter_id: chapterId,
-        material: itemData.MATERIAL,
+        item: itemData.ITEM,
         unit: itemData.UNIDADE,
         quantity: itemData.QTD,
         unit_price: itemData.VALOR_UNITARIO,
@@ -182,7 +182,7 @@ export const budgetService = {
     // Transform the item to match the app's data structure
     const transformedItem = {
       id: itemId,
-      MATERIAL: data.material,
+      item: data.item,
       UNIDADE: data.unit,
       QTD: data.quantity,
       VALOR_UNITARIO: data.unit_price,
@@ -200,7 +200,7 @@ export const budgetService = {
     const { data, error } = await supabase
       .from('budget_items')
       .update({
-        material: updates.MATERIAL,
+        item: updates.ITEM,
         unit: updates.UNIDADE,
         quantity: updates.QTD,
         unit_price: updates.VALOR_UNITARIO,
@@ -218,7 +218,7 @@ export const budgetService = {
     // Transform the item to match the app's data structure
     const transformedItem = {
       id: data.id,
-      MATERIAL: data.material,
+      ITEM: data.materi,
       UNIDADE: data.unit,
       QTD: data.quantity,
       VALOR_UNITARIO: data.unit_price,

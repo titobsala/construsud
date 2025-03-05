@@ -12,7 +12,7 @@ const EditItemModal = () => {
   } = useBudget();
   
   const [formData, setFormData] = useState({
-    MATERIAL: '',
+    ITEM: '',
     UNIDADE: '',
     QTD: 0,
     VALOR_UNITARIO: 0,
@@ -48,7 +48,7 @@ const EditItemModal = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.MATERIAL || !formData.UNIDADE) {
+    if (!formData.ITEM || !formData.UNIDADE) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -89,12 +89,12 @@ const EditItemModal = () => {
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              MATERIAL
+              ITEM
             </label>
             <input
               type="text"
-              name="MATERIAL"
-              value={formData.MATERIAL}
+              name="ITEM"
+              value={formData.ITEM}
               onChange={handleChange}
               className="form-input"
               required

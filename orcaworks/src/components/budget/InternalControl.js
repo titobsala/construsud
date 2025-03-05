@@ -232,7 +232,7 @@ const InternalControl = () => {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                   <tr>
-                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">Material</td>
+                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">Item</td>
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">-</td>
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">-</td>
                     <td className="px-4 py-3">
