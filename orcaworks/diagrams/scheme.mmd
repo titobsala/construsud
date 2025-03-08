@@ -1,0 +1,286 @@
+---
+id: c23db52b-e0cf-4e90-87b3-0d4559baad52
+---
+// [MermaidChart: c23db52b-e0cf-4e90-87b3-0d4559baad52]
+```
+erDiagram
+    %% Organizações e Usuários
+    ORGANIZATION {
+        uuid id PK
+        string name
+        string vat "Número fiscal da empresa"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    USER {
+        uuid id PK
+        string email
+        string first_name
+        string last_name
+        string position "Cargo do usuário"
+        uuid organization_id FK
+        boolean is_admin
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Projetos e Configurações
+    PROJECT {
+        uuid id PK
+        string name
+        string client_name
+        string status
+        uuid organization_id FK
+        uuid created_by FK
+        decimal default_margin "Margem padrão (%)"
+        decimal cost_per_km "Custo por km (€)"
+        decimal driver_cost "Custo motorista (€/km)"
+        decimal transport_cost "Custo transporte (€/km)"
+        decimal official_hourly_cost "Custo/H Oficial (€)"
+        decimal helper_hourly_cost "Custo/H Ajudante (€)"
+        date estimated_start_date "Estimativa de data de início"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    PROJECT_FINANCIAL {
+        uuid id PK
+        uuid project_id FK
+        decimal dry_cost "Custo seco (€)"
+        decimal total_cost "Custo total (€)"
+        decimal margin_percentage "Margem (%)"
+        decimal sale_price "Venda (€)"
+        decimal margin_amount "Margem (€)"
+        decimal material_cost "Custo de material (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Estrutura do Orçamento
+    CHAPTER {
+        uuid id PK
+        string number "Ex: CAR 1"
+        string title "Ex: FUNDAÇÃO SUPERFICIAL"
+        uuid project_id FK
+        int order
+        decimal total_cost "Custo total do capítulo"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ITEM {
+        uuid id PK
+        string name "Ex: AREIA"
+        uuid chapter_id FK
+        string unit "Ex: M³, KG, UN"
+        decimal quantity
+        decimal unit_price "€/UN"
+        decimal total_price "Total €"
+        boolean is_material "Indica se é um material"
+        uuid parent_item_id FK "NULL para itens de primeiro nível"
+        int order
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ITEM_FINANCIAL {
+        uuid id PK
+        uuid item_id FK
+        decimal dry_cost "Custo seco (€)"
+        decimal total_cost "Custo total (€)"
+        decimal margin_percentage "Margem (%)"
+        decimal sale_price "Venda (€)"
+        decimal margin_amount "Margem (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Custos Adicionais
+    SUBCONTRACTOR {
+        uuid id PK
+        uuid item_id FK
+        uuid subcontractor_list_id FK "Referência ao subcontratado da lista"
+        string name "Nome do subcontratado"
+        decimal price "Preço (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    SUBCONTRACTOR_LIST {
+        uuid id PK
+        uuid organization_id FK
+        string name "Nome do subcontratado"
+        string details "Detalhes adicionais"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    LOGISTICS {
+        uuid id PK
+        uuid item_id FK
+        decimal kilometers "Distância (km)"
+        decimal total_cost "Custo total (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    MISCELLANEOUS {
+        uuid id PK
+        uuid item_id FK
+        decimal food_cost "Alimentação (€)"
+        decimal travel_cost "Passagens (€)"
+        decimal other_cost "Outros (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    LABOR {
+        uuid id PK
+        uuid item_id FK
+        string type "E/O/A (Equipamento/Outro/Ajudante)"
+        decimal duration "Duração (h)"
+        decimal total_cost "Custo total (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    AMORTIZATION {
+        uuid id PK
+        uuid project_id FK
+        decimal percentage "Percentual de distribuição"
+        decimal total_cost "Custo total das amortizações (€)"
+        string description "Descrição"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Execução e Acompanhamento
+    PROJECT_EXECUTION {
+        uuid id PK
+        uuid project_id FK
+        date actual_start_date "Data real de início"
+        date estimated_end_date "Data estimada de conclusão"
+        date actual_end_date "Data real de conclusão"
+        string status "Em andamento, Concluído, Atrasado, etc."
+        decimal completion_percentage "Percentual de conclusão"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    WBS_ELEMENT {
+        uuid id PK
+        uuid project_execution_id FK
+        uuid chapter_id FK "Opcional - relaciona com capítulo"
+        uuid item_id FK "Opcional - relaciona com item"
+        string name "Nome da atividade"
+        date planned_start_date "Data planejada de início"
+        date planned_end_date "Data planejada de término"
+        date actual_start_date "Data real de início"
+        date actual_end_date "Data real de término"
+        decimal completion_percentage "Percentual de conclusão"
+        int order "Ordem no Gantt"
+        uuid parent_id FK "Referência para WBS pai (hierarquia)"
+        string dependencies "Referências a outros WBS"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    TASK {
+        uuid id PK
+        uuid project_execution_id FK
+        uuid wbs_element_id FK "Opcional - relaciona com WBS"
+        string title "Título da tarefa"
+        string description "Descrição detalhada"
+        date due_date "Data de vencimento"
+        string status "A fazer, Em andamento, Concluído, etc."
+        string priority "Baixa, Média, Alta, etc."
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    TASK_ASSIGNMENT {
+        uuid id PK
+        uuid task_id FK
+        uuid user_id FK "Usuário responsável"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Faturas
+    INVOICE {
+        uuid id PK
+        uuid project_id FK
+        uuid chapter_id FK "Opcional - relaciona com capítulo"
+        uuid item_id FK "Opcional - relaciona com item"
+        string invoice_number "Número da fatura"
+        string supplier_name "Nome do fornecedor"
+        string supplier_vat "NIF do fornecedor"
+        date invoice_date "Data da fatura"
+        date payment_date "Data do pagamento"
+        decimal amount "Valor (€)"
+        decimal tax_amount "Valor do imposto (€)"
+        decimal total_amount "Valor total (€)"
+        string payment_method "Método de pagamento"
+        string status "Pendente, Paga, etc."
+        string description "Descrição/observações"
+        string file_path "Caminho para o arquivo"
+        string file_name "Nome do arquivo original"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    INVOICE_ITEM {
+        uuid id PK
+        uuid invoice_id FK
+        uuid item_id FK "Opcional - relaciona com item específico"
+        string description "Descrição do item da fatura"
+        decimal quantity "Quantidade"
+        string unit "Unidade"
+        decimal unit_price "Preço unitário (€)"
+        decimal amount "Valor (€)"
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% Relacionamentos
+    ORGANIZATION ||--o{ USER : "possui"
+    ORGANIZATION ||--o{ PROJECT : "possui"
+    ORGANIZATION ||--o{ SUBCONTRACTOR_LIST : "possui"
+    
+    USER }o--o{ PROJECT : "cria/acessa"
+    USER }o--o{ TASK_ASSIGNMENT : "é atribuído a"
+    
+    PROJECT ||--o{ CHAPTER : "contém"
+    PROJECT ||--o{ AMORTIZATION : "possui"
+    PROJECT ||--|| PROJECT_FINANCIAL : "possui"
+    PROJECT ||--o| PROJECT_EXECUTION : "possui execução"
+    PROJECT ||--o{ INVOICE : "possui"
+    
+    PROJECT_EXECUTION ||--o{ WBS_ELEMENT : "contém"
+    PROJECT_EXECUTION ||--o{ TASK : "contém"
+    
+    CHAPTER ||--o{ ITEM : "contém"
+    CHAPTER ||--o{ WBS_ELEMENT : "pode ser associado a"
+    CHAPTER ||--o{ INVOICE : "pode estar relacionado a"
+    
+    ITEM ||--o{ ITEM : "pode ter sub-itens"
+    ITEM ||--|| ITEM_FINANCIAL : "possui"
+    ITEM ||--o{ SUBCONTRACTOR : "possui"
+    ITEM ||--o{ LOGISTICS : "possui"
+    ITEM ||--o{ MISCELLANEOUS : "possui"
+    ITEM ||--o{ LABOR : "possui"
+    ITEM ||--o{ WBS_ELEMENT : "pode ser associado a"
+    ITEM ||--o{ INVOICE : "pode estar relacionado a"
+    ITEM ||--o{ INVOICE_ITEM : "pode estar relacionado a"
+    
+    WBS_ELEMENT ||--o{ WBS_ELEMENT : "pode ter elementos filhos"
+    WBS_ELEMENT ||--o{ TASK : "pode ter tarefas"
+    
+    TASK ||--o{ TASK_ASSIGNMENT : "pode ser atribuída"
+    
+    SUBCONTRACTOR_LIST ||--o{ SUBCONTRACTOR : "referenciado por"
+    
+    INVOICE ||--o{ INVOICE_ITEM : "contém"
+
+```
