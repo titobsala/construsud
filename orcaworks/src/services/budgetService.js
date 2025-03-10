@@ -200,6 +200,12 @@ export const budgetService = {
   },
   
   // Update a budget item
+// [MermaidChart: c23db52b-e0cf-4e90-87b3-0d4559baad52]
+// [MermaidChart: c23db52b-e0cf-4e90-87b3-0d4559baad52]
+// [MermaidChart: 6bf32b1a-a570-444b-b0be-660ebe749576]
+// [MermaidChart: 6bf32b1a-a570-444b-b0be-660ebe749576]
+// [MermaidChart: 6bf32b1a-a570-444b-b0be-660ebe749576]
+// [MermaidChart: c23db52b-e0cf-4e90-87b3-0d4559baad52]
   async updateItem(itemId, updates) {
     // Calculate the total value
     const totalValue = updates.QTD * updates.VALOR_UNITARIO;
